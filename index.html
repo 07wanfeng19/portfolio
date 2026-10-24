@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>小工具箱 · 在线实用工具集</title>
+<title>个人作品集 · 小工具箱</title>
 <style>
   :root {
     --bg: #0f1420;
@@ -128,11 +128,17 @@
 </head>
 <body>
 <header>
-  <h1>小<span>工具箱</span></h1>
+  <h1>作品集 · 小<span>工具箱</span></h1>
   <p>纯前端 · 离线可用 · 数据不出浏览器</p>
 </header>
 
-<div class="tabs">
+<div class="works" style="max-width:960px;margin:0 auto 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+  <a href="#toolbox" style="color:var(--accent2);text-decoration:none;border:1px solid var(--border);padding:8px 16px;border-radius:8px;font-size:14px;background:var(--panel);">🧰 在线工具箱（当前页）</a>
+  <a href="https://github.com/07wanfeng19/portfolio/tree/master/scraper" style="color:var(--text);text-decoration:none;border:1px solid var(--border);padding:8px 16px;border-radius:8px;font-size:14px;background:var(--panel);">🐍 网页抓取工具</a>
+  <a href="https://github.com/07wanfeng19/whale-girl-pet" style="color:var(--text);text-decoration:none;border:1px solid var(--border);padding:8px 16px;border-radius:8px;font-size:14px;background:var(--panel);">🐳 Android 生态移植案例</a>
+</div>
+
+<div class="tabs" id="toolbox">
   <button class="active" data-tab="json">JSON 格式化</button>
   <button data-tab="stamp">时间戳转换</button>
   <button data-tab="base64">Base64 编解码</button>
@@ -193,7 +199,7 @@
   <div class="result"><pre id="count-out"></pre></div>
 </div>
 
-<footer>本地演示作品 · 前端零依赖 · 数据完全在浏览器内处理</footer>
+<footer>作品集 · 在线工具箱（前端零依赖） · 另有网页抓取工具与 Android 生态移植案例见上方导航</footer>
 
 <script>
   // 切换标签
