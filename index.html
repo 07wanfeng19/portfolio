@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小工具箱 · 在线实用工具集</title>
+<style>
+  :root {
+    --bg: #0f1420;
+    --panel: #1a2130;
+    --panel2: #222b3d;
+    --border: #2e3a52;
+    --text: #e6ebf5;
+    --muted: #8a94a8;
+    --accent: #4f8cff;
+    --accent2: #35c2a5;
+    --danger: #ff6b6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  header {
+    max-width: 960px;
+    margin: 0 auto 20px;
+    text-align: center;
+  }
+  header h1 { font-size: 26px; font-weight: 700; letter-spacing: 1px; }
+  header h1 span { color: var(--accent); }
+  header p { color: var(--muted); margin-top: 8px; font-size: 14px; }
+  .tabs {
+    max-width: 960px;
+    margin: 0 auto 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .tabs button {
+    background: var(--panel);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 9px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all .18s;
+  }
+  .tabs button:hover { color: var(--text); border-color: var(--accent); }
+  .tabs button.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .panel {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: none;
+  }
+  .panel.active { display: block; }
+  .panel h2 { font-size: 18px; margin-bottom: 16px; color: var(--accent2); }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
+  textarea, input[type="text"], input[type="number"] {
+    width: 100%;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  textarea:focus, input:focus { outline: none; border-color: var(--accent); }
+  .row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 140px; }
+  button.act {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 16px;
+    transition: opacity .18s;
+  }
+  button.act:hover { opacity: .85; }
+  button.ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 11px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 16px;
+    margin-left: 8px;
+  }
+  .result {
+    margin-top: 16px;
+    padding: 14px;
+    background: var(--panel2);
+    border-radius: 8px;
+    font-size: 14px;
+    word-break: break-all;
+    line-height: 1.7;
+    min-height: 20px;
+  }
+  .result pre { white-space: pre-wrap; font-family: inherit; }
+  .stat { color: var(--accent2); font-weight: 600; }
+  footer {
+    max-width: 960px;
+    margin: 24px auto 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>小<span>工具箱</span></h1>
+  <p>纯前端 · 离线可用 · 数据不出浏览器</p>
+</header>
+
+<div class="tabs">
+  <button class="active" data-tab="json">JSON 格式化</button>
+  <button data-tab="stamp">时间戳转换</button>
+  <button data-tab="base64">Base64 编解码</button>
+  <button data-tab="hash">文本哈希</button>
+  <button data-tab="count">字数统计</button>
+</div>
+
+<!-- JSON -->
+<div class="panel active" id="json">
+  <h2>JSON 格式化 / 校验</h2>
+  <textarea id="json-in" rows="10" placeholder='粘贴 JSON，例如 {"name":"工具箱","ver":1}'></textarea>
+  <div>
+    <button class="act" onclick="fmtJson()">格式化</button>
+    <button class="act" style="background:var(--accent2)" onclick="minifyJson()">压缩</button>
+    <button class="ghost" onclick="clearAll()">清空</button>
+  </div>
+  <div class="result"><pre id="json-out"></pre></div>
+</div>
+
+<!-- 时间戳 -->
+<div class="panel" id="stamp">
+  <h2>时间戳 ↔ 日期 互转</h2>
+  <label>Unix 时间戳（秒）</label>
+  <input type="text" id="ts-in" placeholder="例如 1700000000">
+  <button class="act" onclick="tsToDate()">转日期</button>
+  <label>日期时间</label>
+  <div class="row">
+    <div><input type="text" id="date-in" placeholder="2026-01-01 12:00:00"></div>
+  </div>
+  <button class="act" style="background:var(--accent2)" onclick="dateToTs()">转时间戳</button>
+  <div class="result"><pre id="ts-out"></pre></div>
+</div>
+
+<!-- Base64 -->
+<div class="panel" id="base64">
+  <h2>Base64 编码 / 解码</h2>
+  <textarea id="b64-in" rows="6" placeholder="输入要编码或解码的内容"></textarea>
+  <div>
+    <button class="act" onclick="b64Encode()">编码</button>
+    <button class="act" style="background:var(--accent2)" onclick="b64Decode()">解码</button>
+  </div>
+  <div class="result"><pre id="b64-out"></pre></div>
+</div>
+
+<!-- 哈希 -->
+<div class="panel" id="hash">
+  <h2>文本哈希（MD5 / SHA-1 / SHA-256）</h2>
+  <textarea id="hash-in" rows="5" placeholder="输入要计算哈希的文本"></textarea>
+  <button class="act" onclick="calcHash()">计算</button>
+  <div class="result"><pre id="hash-out"></pre></div>
+</div>
+
+<!-- 字数 -->
+<div class="panel" id="count">
+  <h2>字数 / 字符统计</h2>
+  <textarea id="count-in" rows="8" placeholder="输入要统计的文字"></textarea>
+  <button class="act" onclick="countText()">统计</button>
+  <div class="result"><pre id="count-out"></pre></div>
+</div>
+
+<footer>本地演示作品 · 前端零依赖 · 数据完全在浏览器内处理</footer>
+
+<script>
+  // 切换标签
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  function clearAll() { document.getElementById('json-in').value = ''; document.getElementById('json-out').textContent = ''; }
+
+  // JSON
+  function fmtJson() {
+    const el = document.getElementById('json-out');
+    try {
+      const obj = JSON.parse(document.getElementById('json-in').value);
+      el.textContent = JSON.stringify(obj, null, 2);
+    } catch (e) {
+      el.textContent = '❌ JSON 格式错误：' + e.message;
+    }
+  }
+  function minifyJson() {
+    const el = document.getElementById('json-out');
+    try {
+      const obj = JSON.parse(document.getElementById('json-in').value);
+      el.textContent = JSON.stringify(obj);
+    } catch (e) {
+      el.textContent = '❌ JSON 格式错误：' + e.message;
+    }
+  }
+
+  // 时间戳
+  function tsToDate() {
+    const el = document.getElementById('ts-out');
+    const v = document.getElementById('ts-in').value.trim();
+    const ts = v.length === 13 ? Number(v) : Number(v) * 1000;
+    if (!ts || isNaN(ts)) { el.textContent = '❌ 请输入有效时间戳'; return; }
+    const d = new Date(ts);
+    el.textContent = '本地时间：' + formatDate(d) + '\nUTC 时间：' + d.toISOString();
+  }
+  function dateToTs() {
+    const el = document.getElementById('ts-out');
+    const v = document.getElementById('date-in').value.trim();
+    const d = new Date(v.replace(/-/g, '/'));
+    if (isNaN(d.getTime())) { el.textContent = '❌ 日期格式无效，请用 2026-01-01 12:00:00'; return; }
+    el.textContent = '秒级：' + Math.floor(d.getTime() / 1000) + '\n毫秒级：' + d.getTime();
+  }
+  function formatDate(d) {
+    const p = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+  }
+
+  // Base64
+  function b64Encode() {
+    const el = document.getElementById('b64-out');
+    try {
+      el.textContent = btoa(unescape(encodeURIComponent(document.getElementById('b64-in').value)));
+    } catch (e) { el.textContent = '❌ 编码失败：' + e.message; }
+  }
+  function b64Decode() {
+    const el = document.getElementById('b64-out');
+    try {
+      el.textContent = decodeURIComponent(escape(atob(document.getElementById('b64-in').value.trim())));
+    } catch (e) { el.textContent = '❌ 解码失败（可能不是有效 Base64）：' + e.message; }
+  }
+
+  // 哈希（Web Crypto）
+  async function calcHash() {
+    const el = document.getElementById('hash-out');
+    const text = document.getElementById('hash-in').value;
+    const data = new TextEncoder().encode(text);
+    const lines = [];
+    for (const [name, algo] of [['MD5', 'MD5'], ['SHA-1', 'SHA-1'], ['SHA-256', 'SHA-256']]) {
+      try {
+        const buf = await crypto.subtle.digest(algo, data);
+        lines.push(name + '：' + [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join(''));
+      } catch (e) {
+        lines.push(name + '：浏览器不支持');
+      }
+    }
+    el.textContent = lines.join('\n');
+  }
+
+  // 字数统计
+  function countText() {
+    const el = document.getElementById('count-out');
+    const t = document.getElementById('count-in').value;
+    const chars = t.length;
+    const noSpace = t.replace(/\s/g, '').length;
+    const cn = (t.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const en = (t.match(/[a-zA-Z]/g) || []).length;
+    const num = (t.match(/[0-9]/g) || []).length;
+    const lines = t ? t.split('\n').length : 0;
+    el.innerHTML =
+      '总字符数：<span class="stat">' + chars + '</span>\n' +
+      '去空白字符：<span class="stat">' + noSpace + '</span>\n' +
+      '中文字：<span class="stat">' + cn + '</span> · 英文字母：<span class="stat">' + en + '</span> · 数字：<span class="stat">' + num + '</span>\n' +
+      '行数：<span class="stat">' + lines + '</span>';
+  }
+</script>
+</body>
+</html>
